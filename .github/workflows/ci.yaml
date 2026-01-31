@@ -17,9 +17,18 @@ jobs:
           node-version: 22.x
           cache: npm
       
-      - name: Instalar depemdemcias
+      - name: Instalar dependencias
         run: npm install
 
-      - name: Ejecutar puebas unitarias
+      - name: Ejecutar pruebas unitarias
         run: npm test
-        
+
+      # ✅ NUEVO: Subir artifact con resultados de pruebas
+      - name: Subir resultados de pruebas
+        uses: actions/upload-artifact@v4
+        if: always()  # Se ejecuta aunque las pruebas fallen
+        with:
+          name: test-results
+          path: |
+            coverage/
+            **/*.log

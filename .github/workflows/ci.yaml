@@ -1,7 +1,7 @@
 name: CI
 
-on: 
-  push: 
+on:
+  push:
 
 jobs:
   ci:
@@ -13,22 +13,24 @@ jobs:
 
       - name: Configurar node.js
         uses: actions/setup-node@v4
-        with:
+        with: 
           node-version: 22.x
           cache: npm
-      
+
       - name: Instalar dependencias
         run: npm install
 
       - name: Ejecutar pruebas unitarias
         run: npm test
 
-      # ✅ NUEVO: Subir artifact con resultados de pruebas
-      - name: Subir resultados de pruebas
+      - name: Analizar codigo
+        run: npm run lint
+
+      - name: Subir reporte de analisis
+        if: always() # success() o failure() 
         uses: actions/upload-artifact@v4
-        if: always()  # Se ejecuta aunque las pruebas fallen
         with:
-          name: test-results
-          path: |
-            coverage/
-            **/*.log
+          name: cobertura-node22
+          path: coverage/
+          retention-days: 10
+          if-no-files-found: ignore        
